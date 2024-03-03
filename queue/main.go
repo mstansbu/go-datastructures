@@ -10,7 +10,7 @@ type Queue[T comparable] struct {
 	Count int
 }
 
-func (this *Queue[T]) NewLinkedList(node nodes.Node[T]) Queue[T] {
+func (this *Queue[T]) NewQueue(node nodes.Node[T]) Queue[T] {
 	nodeTo := &node
 	return Queue[T]{nodeTo, nodeTo, 1}
 }
