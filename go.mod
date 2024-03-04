@@ -1,4 +1,4 @@
-module mstansbu/datastructures
+module mstansbu/go-datastructures
 
 go 1.21.7
 
