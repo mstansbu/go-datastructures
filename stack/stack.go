@@ -84,14 +84,14 @@ func (this *StackArray[T]) Pop() (T, bool) {
 	returnValue, ok := this.Peek()
 	if ok {
 		this.top--
-		return returnValue, true
 	}
-	return returnValue, false
+	return returnValue, ok
 }
 
 func (this *StackArray[T]) Peek() (T, bool) {
 	if this.top == 0 {
-		return this.items[this.top], false
+		var val T
+		return val, false
 	}
 	return this.items[this.top-1], true
 }
