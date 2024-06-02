@@ -9,30 +9,39 @@ type StackList[T comparable] struct {
 	count uint
 }
 
-func NewStackList[T comparable](node nodes.Node[T]) StackList[T] {
-	nodeTo := &node
-	return StackList[T]{nodeTo, 1}
+func NewStackList[T comparable](values ...T) StackList[T] {
+	newStack := StackList[T]{nil, 0}
+	if len(values) != 0 {
+		newStack.Push(values...)
+	}
+	return newStack
 }
 
-func (this *StackList[T]) Pop() *nodes.Node[T] {
+func (this *StackList[T]) Pop() (T, bool) {
 	if this.Head == nil {
 		this.count = 0
-		return nil
+		var val T
+		return val, false
 	}
 	returnValue := this.Head
 	this.Head = this.Head.Next
 	this.count--
-	return returnValue
+	return returnValue.Val, true
 }
 
-func (this *StackList[T]) Peek() *nodes.Node[T] {
-	return this.Head
+func (this *StackList[T]) Peek() (T, bool) {
+	if this.Head == nil {
+		var val T
+		return val, false
+	}
+	return this.Head.Val, true
 }
 
-func (this *StackList[T]) Push(nodes ...*nodes.Node[T]) {
-	for _, node := range nodes {
+func (this *StackList[T]) Push(values ...T) {
+	for _, value := range values {
+		node := nodes.NewNode(value)
 		node.Next = this.Head
-		this.Head = node
+		this.Head = &node
 		this.count++
 	}
 }
@@ -62,15 +71,10 @@ type StackArray[T comparable] struct {
 	top   uint
 }
 
-func NewStackArray[T comparable](initialSize uint) StackArray[T] {
-	stackSize := uint(1000)
-	if initialSize != 0 {
-		stackSize = initialSize
+func NewStackArray[T comparable](values ...T) StackArray[T] {
+	if len(values) == 0 {
+		return StackArray[T]{items: make([]T, 0), top: 0}
 	}
-	return StackArray[T]{items: make([]T, uint(stackSize)), top: 0}
-}
-
-func NewStackArrayFromArray[T comparable](values []T) StackArray[T] {
 	items := make([]T, len(values), len(values)+100)
 	items = append(items, values...)
 	return StackArray[T]{items: items, top: uint(len(items))}
