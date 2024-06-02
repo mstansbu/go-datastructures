@@ -10,31 +10,37 @@ type QueueList[T comparable] struct {
 	count int
 }
 
-func NewQueueList[T comparable](node nodes.Node[T]) QueueList[T] {
-	nodeTo := &node
-	return QueueList[T]{nodeTo, nodeTo, 1}
+func NewQueueList[T comparable](values ...T) QueueList[T] {
+	newQueue := QueueList[T]{nil, nil, 0}
+	if len(values) != 0 {
+		newQueue.Push(values...)
+	}
+	return newQueue
 }
 
-func (this *QueueList[T]) Pop() *nodes.Node[T] {
+func (this *QueueList[T]) Pop() (T, bool) {
 	if this.Head == nil {
-		return nil
+		this.count = 0
+		var val T
+		return val, false
 	}
 	returnValue := this.Head
 	this.Head = this.Head.Next
 	this.count--
-	return returnValue
+	return returnValue.Val, true
 }
 
-func (this *QueueList[T]) Peek() *nodes.Node[T] {
-	return this.Head
+func (this *QueueList[T]) Peek() T {
+	return this.Head.Val
 }
 
-func (this *QueueList[T]) Push(nodes ...*nodes.Node[T]) {
-	for _, node := range nodes {
+func (this *QueueList[T]) Push(values ...T) {
+	for _, value := range values {
+		node := nodes.NewNode(value)
 		if this.Head == nil {
-			this.Head, this.Tail = node, node
+			this.Head, this.Tail = &node, &node
 		} else {
-			this.Tail.Next = node
+			this.Tail.Next = &node
 			this.Tail = this.Tail.Next
 		}
 		this.count++
@@ -59,4 +65,10 @@ func (this *QueueList[T]) Search(value T) bool {
 		}
 	}
 	return false
+}
+
+type QueueArray[T comparable] struct {
+	items []T
+	head  uint
+	tail  uint
 }
