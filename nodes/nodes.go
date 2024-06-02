@@ -5,7 +5,7 @@ type Node[T comparable] struct {
 	Next *Node[T]
 }
 
-func (this *Node[T]) NewNode(value T) Node[T] {
+func NewNode[T comparable](value T) Node[T] {
 	return Node[T]{Val: value, Next: nil}
 }
 
@@ -14,7 +14,7 @@ type Tuple[T any, N any] struct {
 	Second N
 }
 
-func (this *Tuple[T, N]) NewTuple(t T, n N) Tuple[T, N] {
+func NewTuple[T, N any](t T, n N) Tuple[T, N] {
 	return Tuple[T, N]{t, n}
 }
 
@@ -24,6 +24,6 @@ type DLNode[T comparable] struct {
 	Prev *DLNode[T]
 }
 
-func (this *DLNode[T]) NewDLNode(value T) DLNode[T] {
+func NewDLNode[T comparable](value T) DLNode[T] {
 	return DLNode[T]{Val: value, Next: nil, Prev: nil}
 }

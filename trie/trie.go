@@ -5,8 +5,8 @@ type Trie struct {
 	IsWord   bool
 }
 
-func Constructor() Trie {
-	Children := make([]*Trie, 26, 26)
+func NewTrie() Trie {
+	Children := make([]*Trie, 26)
 	return Trie{Children, false}
 }
 
@@ -16,7 +16,7 @@ func (this *Trie) Insert(word string) {
 		return
 	}
 	if this.Children[word[0]-'a'] == nil {
-		newTrie := Constructor()
+		newTrie := NewTrie()
 		this.Children[word[0]-'a'] = &newTrie
 		newTrie.Insert(word[1:])
 	} else {
@@ -26,7 +26,7 @@ func (this *Trie) Insert(word string) {
 
 func (this *Trie) Search(word string) bool {
 	if len(word) == 0 {
-		return this.IsWord == true
+		return this.IsWord
 	}
 	if this.Children[word[0]-'a'] == nil {
 		return false
