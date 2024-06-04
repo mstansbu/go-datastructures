@@ -5,8 +5,8 @@ import (
 )
 
 type QueueList[T comparable] struct {
-	Head  *nodes.Node[T]
-	Tail  *nodes.Node[T]
+	head  *nodes.Node[T]
+	tail  *nodes.Node[T]
 	count int
 }
 
@@ -19,29 +19,31 @@ func NewQueueList[T comparable](values ...T) QueueList[T] {
 }
 
 func (this *QueueList[T]) Pop() (T, bool) {
-	if this.Head == nil {
+	returnValue, ok := this.Peek()
+	if ok {
+		this.head = this.head.Next
+		this.count--
+	}
+	return returnValue, ok
+}
+
+func (this *QueueList[T]) Peek() (T, bool) {
+	if this.head == nil {
 		this.count = 0
 		var val T
 		return val, false
 	}
-	returnValue := this.Head
-	this.Head = this.Head.Next
-	this.count--
-	return returnValue.Val, true
-}
-
-func (this *QueueList[T]) Peek() T {
-	return this.Head.Val
+	return this.head.Val, true
 }
 
 func (this *QueueList[T]) Push(values ...T) {
 	for _, value := range values {
 		node := nodes.NewNode(value)
-		if this.Head == nil {
-			this.Head, this.Tail = &node, &node
+		if this.head == nil {
+			this.head, this.tail = &node, &node
 		} else {
-			this.Tail.Next = &node
-			this.Tail = this.Tail.Next
+			this.tail.Next = &node
+			this.tail = this.tail.Next
 		}
 		this.count++
 	}
@@ -56,7 +58,7 @@ func (this *QueueList[T]) Empty() bool {
 }
 
 func (this *QueueList[T]) Search(value T) bool {
-	curr := this.Head
+	curr := this.head
 	for curr != nil {
 		if curr.Val == value {
 			return true
@@ -86,7 +88,7 @@ func NewQueueArray[T comparable](values ...T) QueueArray[T] {
 func (this *QueueArray[T]) Pop() (T, bool) {
 	returnValue, ok := this.Peek()
 	if ok {
-		this.incrementPointer(this.head)
+		this.head = this.incrementPointer(this.head)
 		this.count--
 	}
 	return returnValue, ok
@@ -104,10 +106,11 @@ func (this *QueueArray[T]) Peek() (T, bool) {
 func (this *QueueArray[T]) Push(values ...T) {
 	for _, value := range values {
 		this.items[this.tail] = value
-		this.incrementPointer(this.tail)
+		this.tail = this.incrementPointer(this.tail)
 		if this.tail == this.head {
 			this.allocateNewArray(len(values) + 100)
 		}
+		this.count++
 	}
 }
 
@@ -128,7 +131,7 @@ func (this *QueueArray[T]) Search(value T) bool {
 		if this.items[currPoint] == value {
 			return true
 		}
-		this.incrementPointer(currPoint)
+		currPoint = this.incrementPointer(currPoint)
 	}
 	return false
 }
@@ -136,20 +139,21 @@ func (this *QueueArray[T]) Search(value T) bool {
 func (this *QueueArray[T]) allocateNewArray(addLength int) {
 	newItems := make([]T, len(this.items), len(this.items)+addLength)
 	newItems = append(newItems, this.items[this.head])
-	this.incrementPointer(this.head)
+	this.head = this.incrementPointer(this.head)
 	for this.head != this.tail {
 		newItems = append(newItems, this.items[this.head])
-		this.incrementPointer(this.head)
+		this.head = this.incrementPointer(this.head)
 	}
 	this.items = newItems
 	this.head = 0
 	this.tail = uint(len(this.items))
 }
 
-func (this *QueueArray[T]) incrementPointer(pointer uint) {
+func (this *QueueArray[T]) incrementPointer(pointer uint) uint {
 	if pointer == uint(len(this.items)-1) {
 		pointer = 0
 	} else {
 		pointer++
 	}
+	return pointer
 }

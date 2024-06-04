@@ -5,7 +5,7 @@ import (
 )
 
 type StackList[T comparable] struct {
-	Head  *nodes.Node[T]
+	head  *nodes.Node[T]
 	count uint
 }
 
@@ -18,30 +18,27 @@ func NewStackList[T comparable](values ...T) StackList[T] {
 }
 
 func (this *StackList[T]) Pop() (T, bool) {
-	if this.Head == nil {
-		this.count = 0
-		var val T
-		return val, false
+	returnValue, ok := this.Peek()
+	if ok {
+		this.head = this.head.Next
+		this.count--
 	}
-	returnValue := this.Head
-	this.Head = this.Head.Next
-	this.count--
-	return returnValue.Val, true
+	return returnValue, ok
 }
 
 func (this *StackList[T]) Peek() (T, bool) {
-	if this.Head == nil {
+	if this.head == nil {
 		var val T
 		return val, false
 	}
-	return this.Head.Val, true
+	return this.head.Val, true
 }
 
 func (this *StackList[T]) Push(values ...T) {
 	for _, value := range values {
 		node := nodes.NewNode(value)
-		node.Next = this.Head
-		this.Head = &node
+		node.Next = this.head
+		this.head = &node
 		this.count++
 	}
 }
@@ -51,11 +48,11 @@ func (this *StackList[T]) Size() uint {
 }
 
 func (this *StackList[T]) Empty() bool {
-	return this.Head == nil
+	return this.count == 0
 }
 
 func (this *StackList[T]) Search(value T) bool {
-	curr := this.Head
+	curr := this.head
 	for curr != nil {
 		if curr.Val == value {
 			return true
