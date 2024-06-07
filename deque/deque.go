@@ -1,6 +1,12 @@
 package deque
 
-import "github.com/mstansbu/go-datastructures/nodes"
+import (
+	"errors"
+
+	"github.com/mstansbu/go-datastructures/nodes"
+)
+
+var ErrEmptyDeque error = errors.New("cannot perform action on empty deque")
 
 type DequeList[T comparable] struct {
 	head  *nodes.DLNode[T]
@@ -50,7 +56,7 @@ func (this *DequeList[T]) PushBack(values ...T) {
 	}
 }
 
-func (this *DequeList[T]) PopFront() (T, bool) {
+func (this *DequeList[T]) PopFront() (T, error) {
 	returnValue, ok := this.PeekFront()
 	if ok {
 		this.head = this.head.Next
@@ -59,11 +65,12 @@ func (this *DequeList[T]) PopFront() (T, bool) {
 			this.tail = nil
 		}
 		this.count--
+		return returnValue, nil
 	}
-	return returnValue, ok
+	return returnValue, ErrEmptyDeque
 }
 
-func (this *DequeList[T]) PopBack() (T, bool) {
+func (this *DequeList[T]) PopBack() (T, error) {
 	returnValue, ok := this.PeekBack()
 	if ok {
 		this.tail = this.tail.Prev
@@ -72,8 +79,9 @@ func (this *DequeList[T]) PopBack() (T, bool) {
 			this.head = nil
 		}
 		this.count--
+		return returnValue, nil
 	}
-	return returnValue, ok
+	return returnValue, ErrEmptyDeque
 }
 
 func (this *DequeList[T]) PeekFront() (T, bool) {

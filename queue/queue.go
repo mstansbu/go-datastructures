@@ -1,8 +1,12 @@
 package queue
 
 import (
+	"errors"
+
 	"github.com/mstansbu/go-datastructures/nodes"
 )
+
+var ErrEmptyQueue error = errors.New("cannot perform action on empty queue")
 
 type QueueList[T comparable] struct {
 	head  *nodes.Node[T]
@@ -18,13 +22,14 @@ func NewQueueList[T comparable](values ...T) QueueList[T] {
 	return newQueue
 }
 
-func (this *QueueList[T]) Pop() (T, bool) {
+func (this *QueueList[T]) Pop() (T, error) {
 	returnValue, ok := this.Peek()
 	if ok {
 		this.head = this.head.Next
 		this.count--
+		return returnValue, nil
 	}
-	return returnValue, ok
+	return returnValue, ErrEmptyQueue
 }
 
 func (this *QueueList[T]) Peek() (T, bool) {
@@ -85,13 +90,14 @@ func NewQueueArray[T comparable](values ...T) QueueArray[T] {
 	return QueueArray[T]{items: items, head: 0, tail: uint(len(items))}
 }
 
-func (this *QueueArray[T]) Pop() (T, bool) {
+func (this *QueueArray[T]) Pop() (T, error) {
 	returnValue, ok := this.Peek()
 	if ok {
 		this.head = this.incrementPointer(this.head)
 		this.count--
+		return returnValue, nil
 	}
-	return returnValue, ok
+	return returnValue, ErrEmptyQueue
 }
 
 func (this *QueueArray[T]) Peek() (T, bool) {

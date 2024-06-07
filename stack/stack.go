@@ -1,8 +1,12 @@
 package stack
 
 import (
+	"errors"
+
 	"github.com/mstansbu/go-datastructures/nodes"
 )
+
+var ErrEmptyStack error = errors.New("stack is empty, cannot perform this operation")
 
 type StackList[T comparable] struct {
 	head  *nodes.Node[T]
@@ -17,13 +21,14 @@ func NewStackList[T comparable](values ...T) StackList[T] {
 	return newStack
 }
 
-func (this *StackList[T]) Pop() (T, bool) {
+func (this *StackList[T]) Pop() (T, error) {
 	returnValue, ok := this.Peek()
 	if ok {
 		this.head = this.head.Next
 		this.count--
+		return returnValue, nil
 	}
-	return returnValue, ok
+	return returnValue, ErrEmptyStack
 }
 
 func (this *StackList[T]) Peek() (T, bool) {
@@ -77,12 +82,13 @@ func NewStackArray[T comparable](values ...T) StackArray[T] {
 	return StackArray[T]{items: items, top: uint(len(items))}
 }
 
-func (this *StackArray[T]) Pop() (T, bool) {
+func (this *StackArray[T]) Pop() (T, error) {
 	returnValue, ok := this.Peek()
 	if ok {
 		this.top--
+		return returnValue, nil
 	}
-	return returnValue, ok
+	return returnValue, ErrEmptyStack
 }
 
 func (this *StackArray[T]) Peek() (T, bool) {
