@@ -27,3 +27,14 @@ type DLNode[T comparable] struct {
 func NewDLNode[T comparable](value T) DLNode[T] {
 	return DLNode[T]{Val: value, Next: nil, Prev: nil}
 }
+
+type ULNode[T comparable] struct {
+	Next      *ULNode[T]
+	ItemCount int
+	Items     []T
+}
+
+func NewULNode[T comparable](maxElements int) ULNode[T] {
+	values := make([]T, 0, maxElements)
+	return ULNode[T]{Next: nil, ItemCount: 0, Items: values}
+}

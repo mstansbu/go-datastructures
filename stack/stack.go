@@ -6,7 +6,7 @@ import (
 	"github.com/mstansbu/go-datastructures/nodes"
 )
 
-var ErrEmptyStack error = errors.New("stack is empty, cannot perform this operation")
+var ErrEmptyStack error = errors.New("cannot perform action on empty stack")
 
 type StackList[T comparable] struct {
 	head  *nodes.Node[T]
