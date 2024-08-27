@@ -26,5 +26,8 @@ func (this *UnrolledLinkedList[T]) Append(values ...T) {
 		node := nodes.NewULNode[T](this.maxElements)
 		this.Head, curr = &node, &node
 	}
+}
+
+func (this *UnrolledLinkedList[T]) Insert(values ...T) {
 
 }
